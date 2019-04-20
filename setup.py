@@ -9,7 +9,7 @@ setuptools.setup(
             'run=ac.run:run'
         ]
     },
-    name="fdg-pet-ct",
+    name="analytic-continuation",
     version="0.0.1",
     author="Geoffrey Angus and Sophia Kivelson",
     author_email="skivelso@stanford.edu",
@@ -24,7 +24,6 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        'torch', 'numpy', 'pandas', 'scikit-learn', 'statsmodels', 'tqdm',
-        'click', 'matplotlib'
+        'torch', 'numpy', 'pandas', 'scikit-learn', 'tqdm', 'click', 'matplotlib'
     ]
 )
