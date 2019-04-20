@@ -1,0 +1,6 @@
+{
+    "process_class": "Builder",
+    "process_args": {
+        "dataset_dir": "/"
+    }
+}
