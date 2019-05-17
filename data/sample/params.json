@@ -1,6 +1,8 @@
 {
     "process_class": "Builder",
     "process_args": {
-        "dataset_dir": "/"
+        "data_dir": "/Users/geoffreyangus/research-repositories/analytic-continuation/_dummy/raw",
+        "output_dir": "/Users/geoffreyangus/research-repositories/analytic-continuation/_dummy/processed",
+        "max_timesteps": 20
     }
 }

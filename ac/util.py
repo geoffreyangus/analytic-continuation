@@ -156,8 +156,8 @@ def log_title(title):
     """
     """
     logging.info("{}".format(title))
-    logging.info("Sabri Eyuboglu and Geoff Angus")
-    logging.info("AIMI – Stanford University – 2018")
+    logging.info("Sophia Kivelson and Geoff Angus")
+    logging.info("Stanford University – 2019")
     logging.info("---------------------------------")
 
 
@@ -182,3 +182,35 @@ def send_email(subject, message, to_addr):
                                to_addr,
                                msg.as_string())
     server.quit()
+
+
+def ensure_dir_exists(dir):
+    """
+    Ensures that a directory exists. Creates it if it does not.
+    args:
+        dir     (str)   directory to be created
+    """
+    if not(os.path.exists(dir)):
+        ensure_dir_exists(os.path.dirname(dir))
+        os.mkdir(dir)
+
+
+def extract_kwargs(kwargs_tuple):
+    """  Converts  a tuple of kwarg tokens to a dictionary. Expects in format
+    (--key1, value1, --key2, value2)
+    Args:
+        kwargs_tuple (tuple(str)) tuple of list
+    """
+    if len(kwargs_tuple) == 0:
+        return {}
+    assert kwargs_tuple[0][:
+                           2] == "--", f"No key for first kwarg {kwargs_tuple[0]}"
+    curr_key = None
+    kwargs_dict = {}
+    for token in kwargs_tuple:
+        if token[:2] == "--":
+            curr_key = token[2:]
+        else:
+            kwargs_dict[curr_key] = token
+
+    return kwargs_dict

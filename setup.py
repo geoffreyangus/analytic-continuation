@@ -6,7 +6,8 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     entry_points={
         'console_scripts': [
-            'run=ac.run:run'
+            'run=ac.run:run',
+            'connect=ac.run:connect'
         ]
     },
     name="analytic-continuation",
