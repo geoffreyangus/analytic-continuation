@@ -1,0 +1,7 @@
+{
+    "process_class": "Experiment",
+    "process_args": {
+        "train_args": {},
+        "valid_args": {}
+    }
+}

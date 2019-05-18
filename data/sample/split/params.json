@@ -1,0 +1,12 @@
+{
+    "process_class": "Splitter",
+    "process_args": {
+        "seed": 123,
+        "aggregate_csv_path": "/Users/geoffreyangus/research-repositories/analytic-continuation/data/sample/sequences.csv",
+        "split_totals": {
+            "train": -1,
+            "valid": 2,
+            "test": 2
+        }
+    }
+}
