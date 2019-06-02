@@ -53,11 +53,11 @@ class BaseDataset(Dataset):
     def _apply_transforms(self, images):
         pass
 
+
 class SequenceDataset(BaseDataset):
     """
     Loads numpy matrices as example sequences.
     """
-
     def __init__(self, dataset_dir, split=None):
         """
         """
@@ -66,5 +66,5 @@ class SequenceDataset(BaseDataset):
     def __getitem__(self, idx):
         """
         """
-        pass
+        sequence_series = self.sequence_df.iloc[idx]
 

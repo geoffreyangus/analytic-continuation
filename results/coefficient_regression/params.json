@@ -1,7 +1,107 @@
 {
     "process_class": "Experiment",
     "process_args": {
-        "train_args": {},
-        "valid_args": {}
+        "seed": 123,
+        "cuda": false,
+        "devices": [
+            0
+        ],
+        "model_save_dir": "_dummy/models",
+        "train_args": {
+            "num_epochs": 10,
+            "summary_period": 1,
+            "metric_configs": [
+                {
+                    "fn": "mean_squared_error",
+                    "primary_task": "coefficients"
+                },
+                {
+                    "fn": "kl_divergence"
+                }
+            ]
+        },
+        "valid_args": {
+            "metric_configs": [
+                {
+                    "fn": "mean_squared_error",
+                    "primary_task": "coefficients",
+                    "is_primary": true
+                },
+                {
+                    "fn": "kl_divergence"
+                }
+            ]
+        },
+        "targets_dir": "data/sample/",
+        "dataset_dir": "data/sample/",
+        "dataset_config": {
+            "class": "SequenceDataset",
+            "args": {}
+        },
+        "dataloader_configs": [
+            {
+                "split": "train",
+                "class": "DataLoader",
+                "args": {
+                    "shuffle": true,
+                    "batch_size": 2,
+                    "num_workers": 4
+                }
+            },
+            {
+                "split": "valid",
+                "class": "DataLoader",
+                "args": {
+                    "shuffle": true,
+                    "batch_size": 2,
+                    "num_workers": 4
+                }
+            }
+        ],
+        "model_config": {
+            "class": "RegressionModel",
+            "args": {
+                "pretrained_configs": [],
+                "encoder_config": {
+                    "class": "SIEncoder",
+                    "args": {
+                        "dropout_prob": 0.5
+                    }
+                },
+                "decoder_config": {
+                    "class": "MTDecoder",
+                    "args": {}
+                },
+                "optim_config": {
+                    "class": "Adam",
+                    "args": {
+                        "lr": 0.0001,
+                        "weight_decay": 0
+                    }
+                },
+                "scheduler_config": {
+                    "class": "StepLR",
+                    "args": {
+                        "step_size": 8,
+                        "gamma": 0.5
+                    }
+                }
+            }
+        },
+        "task_configs": [
+            {
+                "task": "coefficients",
+                "model_args": {
+                    "num_classes": 4,
+                    "task_decoder_config": {
+                        "class": "LinearDecoder",
+                        "args": {
+                            "input_size": 1024
+                        }
+                    }
+                },
+                "dataset_args": {}
+            }
+        ]
     }
 }

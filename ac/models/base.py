@@ -18,11 +18,7 @@ class BaseModel(nn.Module):
     """
     """
 
-    def __init__(self,
-                 optim_class="Adam", optim_args={},
-                 scheduler_class=None, scheduler_args={},
-                 pretrained_configs=[],
-                 cuda=True, devices=[0]):
+    def __init__(self, cuda=True, devices=[0]):
         """
         args:
             device (int or list(int)) A device or a list of devices
@@ -31,18 +27,17 @@ class BaseModel(nn.Module):
         self.cuda = cuda
         self.device = devices[0]
         self.devices = devices
-        self.pretrained_configs = pretrained_configs
-        self.optim_class = optim_class
-        self.optim_args = optim_args
-        self.scheduler_class = scheduler_class
-        self.scheduler_args = scheduler_args
 
-    def _post_init(self):
+    def _post_init(self, optim_config, scheduler_config, pretrained_configs):
         """
         WARNING: must be called at the end of subclass init
         """
-        self._build_optimizer(self.optim_class, self.optim_args,
-                              self.scheduler_class, self.scheduler_args)
+        optim_class = optim_config['class']
+        optim_args = optim_config['args']
+        scheduler_class = scheduler_config['class']
+        scheduler_args = scheduler_config['args']
+        self._build_optimizer(optim_class, optim_args,
+                              scheduler_class, scheduler_args)
 
         # load weights after building model, the experiment should handle loading current model
         for pretrained_config in self.pretrained_configs:
@@ -61,8 +56,8 @@ class BaseModel(nn.Module):
                 params_dict["params"] = self._modules[params_dict["params"]].parameters()
         else:
             optim_args["params"] = self.parameters()
-
         self.optimizer = getattr(optims, optim_class)(**optim_args)
+
         # load scheduler
         if scheduler_class is not None:
             self.scheduler = getattr(schedulers,
@@ -191,20 +186,10 @@ class BaseModel(nn.Module):
         return metrics
 
     def forward(self, inputs, targets):
-        """
-        Forward Pass
-        Args:
-            x   (torch.Tensor) a (batch_size, ...) shaped input tensor
-        IF SINGLE_TASK:
-        Returns:
-            output  (torch.Tensor) a (batch_size, ...)
-        ELIF MULTI_TASK:
-        Returns:
-            outputs  (list(torch.Tensor)) list of outputs for each task
-        """
+        """Forward pass."""
         raise NotImplementedError
 
-    def loss(self, outputs, targets):
+    def calculate_loss(self, outputs, targets):
         """
         """
         raise NotImplementedError
@@ -220,7 +205,7 @@ class BaseModel(nn.Module):
 
     def save_weights(self, destination):
         """
-        args:
+        Args:
             destination (str)   path where to save weights
         """
         torch.save(self.state_dict(), destination)
@@ -228,7 +213,7 @@ class BaseModel(nn.Module):
     def load_weights(self, src_path, inclusion_res=None, substitution_res=None,
                      device=None):
         """
-        args:
+        Args:
             src_path (str) path to the weights file
             inclusion_res (list(str) or str) list of regex patterns or one regex pattern.
                     If not None, only loads weights that match at least one of the regex patterns.
@@ -260,8 +245,9 @@ class BaseModel(nn.Module):
                      f"from {src_path} matching '{inclusion_res}'.")
 
     def _to_gpu(self):
-        """ Moves the model to the gpu. Should be reimplemented by child model for
-        data parallel.
+        """Moves the model to the gpu.
+
+        Should be reimplemented by child model for torch.DataParallel.
         """
         if self.cuda:
             self.to(self.device)
@@ -270,3 +256,10 @@ class BaseModel(nn.Module):
         """
         """
         pass
+
+
+class RegressionModel(BaseModel):
+    """
+    """
+
+    def __init__(self)
