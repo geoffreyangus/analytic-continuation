@@ -9,9 +9,9 @@ import torch.optim as optims
 import torch.optim.lr_scheduler as schedulers
 from tqdm import tqdm
 
-import pet_ct.model.losses as losses
-from pet_ct.util.metrics import Metrics
-from pet_ct.util.util import place_on_gpu, log_cuda_memory, log_predictions
+import ac.models.modules.losses as losses
+from ac.analysis.metrics import Metrics
+from ac.util import place_on_gpu
 
 
 class BaseModel(nn.Module):
@@ -40,10 +40,11 @@ class BaseModel(nn.Module):
                               scheduler_class, scheduler_args)
 
         # load weights after building model, the experiment should handle loading current model
-        for pretrained_config in self.pretrained_configs:
+        for pretrained_config in pretrained_configs:
             self.load_weights(device=self.device, **pretrained_config)
 
-        self.to(self.device)
+        if self.cuda:
+            self.to(self.device)
 
     def _build_optimizer(self,
                          optim_class="Adam", optim_args={},
@@ -152,7 +153,7 @@ class BaseModel(nn.Module):
 
                 # forward pass
                 outputs = self.forward(inputs, targets)
-                loss = self.loss(outputs, targets)
+                loss = self.calculate_loss(outputs, targets)
 
                 # backward pass
                 self.optimizer.zero_grad()
@@ -177,7 +178,7 @@ class BaseModel(nn.Module):
                 avg_loss = ((avg_loss * i) + loss) / (i + 1)
                 if writer is not None:
                     writer.add_scalar(tag="loss", scalar_value=loss)
-                t.set_postfix(loss='{:05.3f}'.format(float(avg_loss)))
+                t.set_postfix(loss='{:05.6f}'.format(float(avg_loss)))
                 t.update()
 
                 del loss, outputs, inputs, targets, labels
@@ -256,10 +257,3 @@ class BaseModel(nn.Module):
         """
         """
         pass
-
-
-class RegressionModel(BaseModel):
-    """
-    """
-
-    def __init__(self)

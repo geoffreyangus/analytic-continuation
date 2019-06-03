@@ -1,0 +1,4 @@
+,coeff_0,coeff_0,coeff_1,coeff_1,coeff_2,coeff_2,coeff_3,coeff_3
+,target,pred,target,pred,target,pred,target,pred
+1,tensor([0.2764]),tensor([0.2800]),tensor([0.1276]),tensor([0.2505]),tensor([0.1791]),tensor([0.1982]),tensor([0.4170]),tensor([0.2713])
+5,tensor([0.0551]),tensor([0.0581]),tensor([0.3471]),tensor([0.5608]),tensor([0.2567]),tensor([0.1724]),tensor([0.3411]),tensor([0.2087])

@@ -1,3 +1,3 @@
-sequence_id,coeffs,filepath,parameters
-8,"[0.3173, 0.2836, 0.1796, 0.2194]",/Users/geoffreyangus/research-repositories/analytic-continuation/_dummy/processed/sequence_8,"[nan, 0.1069, 0.7578, 4.0633]"
-6,"[0.5728, 0.2527, 0.0358, 0.1388]",/Users/geoffreyangus/research-repositories/analytic-continuation/_dummy/processed/sequence_6,"[nan, 0.3431, 0.3191, 4.5128]"
+sequence_id,coeff_0,coeff_1,coeff_2,coeff_3,param_0,param_1,param_2,param_3,sequence_path
+8,0.3173,0.2836,0.1796,0.2194,,0.1069,0.7578,4.0633,/Users/geoffreyangus/research-repositories/analytic-continuation/_dummy/processed/sequence_8.npy
+6,0.5728,0.2527,0.0358,0.1388,,0.3431,0.3191,4.5128,/Users/geoffreyangus/research-repositories/analytic-continuation/_dummy/processed/sequence_6.npy

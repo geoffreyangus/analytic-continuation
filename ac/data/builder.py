@@ -65,6 +65,13 @@ class Builder(Process):
         beta_vals = None
         output_df = []
         for sequence_id, data in data_dict.items():
+            output = {'sequence_id': sequence_id}
+
+            for coeff_idx, coeff in enumerate(data['coeffs']):
+                output[f'coeff_{coeff_idx}'] = coeff
+            for param_idx, param in enumerate(data['parameters']):
+                output[f'param_{param_idx}'] = param
+
             beta_dict = data_dict[sequence_id]['beta']
             if not beta_vals:
                 beta_vals = sorted(beta_dict.keys(),
@@ -79,12 +86,8 @@ class Builder(Process):
 
             output_path = os.path.join(self.output_dir, f'sequence_{sequence_id}')
             np.save(output_path, X)
-            output_df.append({
-                'sequence_id': sequence_id,
-                'coeffs': data['coeffs'],
-                'parameters': data['parameters'],
-                'filepath': output_path
-            })
+            output['sequence_path'] = f'{output_path}.npy'
+            output_df.append(output)
 
         output_df = pd.DataFrame(output_df)
         output_df = output_df.set_index('sequence_id')

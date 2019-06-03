@@ -5,8 +5,10 @@ import os
 from ac.util import log_title, load_params, extract_kwargs
 from ac.data.builder import Builder
 from ac.data.splitter import Splitter
+from ac.experiment.experiment import Experiment
 
 import click
+
 
 @click.command(context_settings=dict(
     ignore_unknown_options=True,

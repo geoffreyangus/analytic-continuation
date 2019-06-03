@@ -1,0 +1,207 @@
+{
+    "process_class": "Experiment",
+    "process_args": {
+        "seed": 123,
+        "cuda": false,
+        "devices": [
+            0
+        ],
+        "model_save_dir": "_dummy/models",
+        "train_args": {
+            "num_epochs": 100,
+            "summary_period": 1,
+            "metric_configs": [
+                {
+                    "fn": "mean_squared_error"
+                }
+            ]
+        },
+        "valid_args": {
+            "metric_configs": [
+                {
+                    "fn": "mean_squared_error",
+                    "primary_task": "coeff_0",
+                    "is_primary": true
+                }
+            ]
+        },
+        "targets_dir": "data/sample/",
+        "dataset_dir": "data/sample/",
+        "dataset_config": {
+            "class": "SequenceDataset",
+            "args": {}
+        },
+        "dataloader_configs": [
+            {
+                "split": "train",
+                "class": "MTDataLoader",
+                "args": {
+                    "shuffle": false,
+                    "batch_size": 10,
+                    "num_workers": 4,
+                    "sampler": "RandomSampler",
+                    "num_samples": 100
+                }
+            },
+            {
+                "split": "valid",
+                "class": "MTDataLoader",
+                "args": {
+                    "shuffle": true,
+                    "batch_size": 2,
+                    "num_workers": 4
+                }
+            }
+        ],
+        "model_config": {
+            "class": "CoeffsRegressionModel",
+            "args": {
+                "pretrained_configs": [],
+                "encoder_config": {
+                    "class": "SimpleEncoder",
+                    "args": {
+                        "conv_layer_configs": [
+                            {
+                                "class": "Conv1d",
+                                "args": {
+                                    "in_channels": 6,
+                                    "out_channels": 12,
+                                    "kernel_size": 5,
+                                    "stride": 1
+                                }
+                            },
+                            {
+                                "class": "MaxPool1d",
+                                "args": {
+                                    "kernel_size": 2
+                                }
+                            },
+                            {
+                                "class": "Conv1d",
+                                "args": {
+                                    "in_channels": 12,
+                                    "out_channels": 18,
+                                    "kernel_size": 5,
+                                    "stride": 1
+                                }
+                            },
+                            {
+                                "class": "MaxPool1d",
+                                "args": {
+                                    "kernel_size": 2
+                                }
+                            },
+                            {
+                                "class": "Conv1d",
+                                "args": {
+                                    "in_channels": 18,
+                                    "out_channels": 24,
+                                    "kernel_size": 5,
+                                    "stride": 1
+                                }
+                            }
+                        ],
+                        "linear_layer_configs": [
+                            {
+                                "class": "Linear",
+                                "args": {
+                                    "in_features": 3672,
+                                    "out_features": 1024
+                                }
+                            },
+                            {
+                                "class": "Dropout",
+                                "args": {
+                                    "p": 0.5
+                                }
+                            },
+                            {
+                                "class": "Linear",
+                                "args": {
+                                    "in_features": 1024,
+                                    "out_features": 256
+                                }
+                            }
+                        ]
+                    }
+                },
+                "loss_config": {
+                    "class": "MTMSELoss",
+                    "args": {}
+                },
+                "decoder_config": {
+                    "class": "MTDecoder",
+                    "args": {}
+                },
+                "optim_config": {
+                    "class": "Adam",
+                    "args": {
+                        "lr": 0.0001,
+                        "weight_decay": 0
+                    }
+                },
+                "scheduler_config": {
+                    "class": "StepLR",
+                    "args": {
+                        "step_size": 4,
+                        "gamma": 0.5
+                    }
+                }
+            }
+        },
+        "task_configs": [
+            {
+                "task": "coeff_0",
+                "model_args": {
+                    "task_head_config": {
+                        "class": "LinearDecoder",
+                        "args": {
+                            "input_size": 256,
+                            "num_classes": 1
+                        }
+                    }
+                },
+                "dataset_args": {}
+            },
+            {
+                "task": "coeff_1",
+                "model_args": {
+                    "task_head_config": {
+                        "class": "LinearDecoder",
+                        "args": {
+                            "input_size": 256,
+                            "num_classes": 1
+                        }
+                    }
+                },
+                "dataset_args": {}
+            },
+            {
+                "task": "coeff_2",
+                "model_args": {
+                    "task_head_config": {
+                        "class": "LinearDecoder",
+                        "args": {
+                            "input_size": 256,
+                            "num_classes": 1
+                        }
+                    }
+                },
+                "dataset_args": {}
+            },
+            {
+                "task": "coeff_3",
+                "model_args": {
+                    "task_head_config": {
+                        "class": "LinearDecoder",
+                        "args": {
+                            "input_size": 256,
+                            "num_classes": 1
+                        }
+                    }
+                },
+                "dataset_args": {}
+            }
+        ]
+    }
+}

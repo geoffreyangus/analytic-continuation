@@ -1,10 +1,18 @@
 """
 """
+import os
+from time import time
+import logging
+
 import torch
 import torch.nn as nn
 import numpy as np
 
-from ac.util import Process
+from ac.util import Process, ensure_dir_exists, save_dict_to_json
+import ac.experiment.datasets as datasets
+import ac.experiment.dataloaders as dataloaders
+from ac.experiment.history import ExperimentHistory
+import ac.models.zoo as models
 
 
 class Experiment(Process):
@@ -30,6 +38,7 @@ class Experiment(Process):
         self.devices = devices
 
         # set location for saved model weights
+        ensure_dir_exists(model_save_dir)
         self.model_save_dir = model_save_dir
         self.model_save_name = int(time())
 
@@ -44,7 +53,7 @@ class Experiment(Process):
             for task_config in task_configs
         ]
         dataset_args = {"task_configs": dataset_task_configs, **dataset_args}
-        self._build_dataloaders(dataset_class, dataset_args, dataloader_configs)
+        self._build_dataloaders(dataset_dir, dataset_class, dataset_args, dataloader_configs)
 
         logging.info('Building model...')
         model_class = model_config['class']
@@ -69,25 +78,25 @@ class Experiment(Process):
         return os.path.isdir(os.path.join(self.dir, "last"))
 
 
-    def _build_dataloaders(self, dataset_class, dataset_args,
-                           dataset_task_configs, dataloader_configs):
+    def _build_dataloaders(self, dataset_dir, dataset_class, dataset_args,
+                           dataloader_configs):
         """
         """
         self.datasets = {}
         self.dataloaders = {}
         for dataloader_config in dataloader_configs:
             split = dataloader_config["split"]
-            dataloader_class = dataloader_config["dataloader_class"]
-            dataloader_args = dataloader_config["dataloader_args"]
+            dataloader_class = dataloader_config["class"]
+            dataloader_args = dataloader_config["args"]
             logging.info(f"Loading {split} data")
-            self._build_dataloader(split, dataset_class, dataset_args,
+            self._build_dataloader(split, dataset_dir, dataset_class, dataset_args,
                                    dataloader_class, dataloader_args)
 
-    def _build_dataloader(self, split, dataset_class, dataset_args,
+    def _build_dataloader(self, split, dataset_dir, dataset_class, dataset_args,
                           dataloader_class, dataloader_args):
         """
         """
-        dataset = getattr(datasets, dataset_class)(split=split, **dataset_args)
+        dataset = getattr(datasets, dataset_class)(dataset_dir, split=split, **dataset_args)
         self.datasets[split] = dataset
 
         dataloader = (getattr(dataloaders, dataloader_class)(dataset, **dataloader_args))
@@ -100,7 +109,7 @@ class Experiment(Process):
         If the model was previously trained, it is loaded from a previous model.
         """
         model_class = getattr(models, model_class)
-        self.model = model_class(task_configs, cuda=self.cuda, devices=self.devices,
+        self.model = model_class(cuda=self.cuda, devices=self.devices,
                                  **model_args)
 
     def _run(self, overwrite=False, mode="train", train_split="train", eval_split="valid"):
@@ -116,7 +125,7 @@ class Experiment(Process):
         """
         """
         metrics = self.model.score(self.dataloaders[eval_split],
-                                   **self.evaluate_args)
+                                   **self.valid_args)
         self._save_metrics(self.model_dir, metrics.metrics,
                            f"eval_{eval_split}")
         return metrics
@@ -132,23 +141,23 @@ class Experiment(Process):
         for epoch_num, train_metrics in enumerate(self.model.train_model(
             dataloader=self.dataloaders[train_split], **self.train_args)):
 
-            val_metrics = self.model.score(self.dataloaders[valid_split],
-                                           **self.evaluate_args)
+            valid_metrics = self.model.score(self.dataloaders[valid_split],
+                                             **self.valid_args)
 
             self._save_weights(name="last")
             self._save_epoch(epoch_num, train_metrics,
-                             val_metrics, name="last")
+                             valid_metrics, name="last")
 
             metrics = {"train": train_metrics.metrics,
-                       "valid": val_metrics.metrics}
+                       "valid": valid_metrics.metrics}
             self.train_history.record_epoch(metrics, self.model.scheduler.get_lr()[0])
             self.train_history.write()
 
-            if (best_score is None or val_metrics.primary_metric > best_score):
+            if (best_score is None or valid_metrics.primary_metric < best_score):
                 self._save_weights(name="best")
                 self._save_epoch(epoch_num, train_metrics,
-                                 val_metrics, name="best")
-                best_score = val_metrics.primary_metric
+                                 valid_metrics, name="best")
+                best_score = valid_metrics.primary_metric
         return metrics
 
     def get_history(self):
@@ -160,7 +169,7 @@ class Experiment(Process):
         """
         """
         remote_weights_path = os.path.join(self.model_save_dir,
-                                           f"{self.experiment_t}_{name}_weights")
+                                           f"{self.model_save_name}_{name}_weights")
         self.model.save_weights(remote_weights_path)
 
         # create a symbolic link to model weights

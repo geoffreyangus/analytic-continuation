@@ -10,6 +10,10 @@ import traceback
 import socket
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import collections
+
+import torch
+import numpy as np
 
 class Process():
     """
@@ -105,21 +109,21 @@ def load_params(process_dir):
 def send_email(subject, message, to_addr):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.starttls()
-    server.login("analytic-continuation", "experiments")
+    server.login("analyticcontinuation2019", "experiments")
 
     msg = MIMEMultipart()       # create a message
 
     # add in the actual person name to the message template
 
     # setup the parameters of the message
-    msg['From'] = "analytic-continuation@gmail.com"
+    msg['From'] = "analyticcontinuation2019@gmail.com"
     msg['To'] = to_addr
     msg['Subject'] = subject
 
     # add in the message body
     msg.attach(MIMEText(message, 'plain'))
 
-    problems = server.sendmail("analytic-continuation@gmail.com",
+    problems = server.sendmail("analyticcontinuation2019@gmail.com",
                                to_addr,
                                msg.as_string())
     server.quit()
@@ -161,29 +165,6 @@ def log_title(title):
     logging.info("---------------------------------")
 
 
-def send_email(subject, message, to_addr):
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.starttls()
-    server.login("analytic-continuation", "experiments")
-
-    msg = MIMEMultipart()       # create a message
-
-    # add in the actual person name to the message template
-
-    # setup the parameters of the message
-    msg['From'] = "analytic-continuation@gmail.com"
-    msg['To'] = to_addr
-    msg['Subject'] = subject
-
-    # add in the message body
-    msg.attach(MIMEText(message, 'plain'))
-
-    problems = server.sendmail("analytic-continuation@gmail.com",
-                               to_addr,
-                               msg.as_string())
-    server.quit()
-
-
 def ensure_dir_exists(dir):
     """
     Ensures that a directory exists. Creates it if it does not.
@@ -214,3 +195,133 @@ def extract_kwargs(kwargs_tuple):
             kwargs_dict[curr_key] = token
 
     return kwargs_dict
+
+
+def array_like_concat(items):
+    """
+    Concatenates array-like `items` along dimension 0.
+    """
+    if len(items) < 1:
+        raise ValueError("items is empty")
+
+    if len(set([type(item) for item in items])) != 1:
+        raise TypeError("items are not of the same type")
+
+    if isinstance(items[0], list):
+        return sum(items, [])
+    elif isinstance(items[0], torch.Tensor):
+        # zero-dimensional tensors cannot be concatenated
+        if not items[0].shape:
+            items = [item.expand(1) for item in items]
+        return torch.cat(items, dim=0)
+    else:
+        raise TypeError(f"Unrecognized type f{type(items[0])}")
+
+
+def array_like_stack(items):
+    """
+    """
+    if len(items) < 1:
+        raise ValueError("items is empty")
+
+    if len(set([type(item) for item in items])) != 1:
+        raise TypeError("items are not of the same type")
+
+    if isinstance(items[0], list):
+        return items
+    elif isinstance(items[0], torch.Tensor):
+        return torch.stack(items, dim=0)
+    elif isinstance(items[0], np.ndarray):
+        return np.stack(items, axis=0)
+    else:
+        raise TypeError(f"Unrecognized type f{type(items[0])}")
+
+
+def get_batch_size(data):
+    """
+    """
+    if isinstance(data, list):
+        return len(data)
+    elif isinstance(data, torch.Tensor) or isinstance(data, np.ndarray):
+        return data.shape[0]
+    else:
+        raise TypeError(f"Unrecognized type f{type(data)}")
+
+
+def save_dict_to_json(json_path, d):
+    """
+    Saves a python dictionary into a json file
+    Args:
+        d           (dict) of float-castable values (np.float, int, float, etc.)
+        json_path   (string) path to json file
+    """
+    with open(json_path, 'w') as f:
+        json.dump(d, f, indent=4, cls=NumpyEncoder)
+
+
+class NumpyEncoder(json.JSONEncoder):
+    """
+    """
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        if isinstance(obj, np.floating):
+            return float(obj)
+        return json.JSONEncoder.default(self, obj)
+
+
+def flatten_nested_dicts(d, parent_key='', sep='_'):
+    """
+    """
+    items = []
+    for k, v in d.items():
+        new_key = parent_key + sep + k if parent_key else k
+        if isinstance(v, collections.MutableMapping):
+            items.extend(flatten_nested_dicts(v, new_key, sep=sep).items())
+        else:
+            items.append((new_key, v))
+    return dict(items)
+
+
+def place_on_gpu(data, device=0):
+    """
+    Recursively places all 'torch.Tensor's in data on gpu and detaches.
+    If elements are lists or tuples, recurses on the elements. Otherwise it
+    ignores it.
+    source: inspired by place_on_gpu from Snorkel Metal
+    https://github.com/HazyResearch/metal/blob/master/metal/utils.py
+    """
+    data_type = type(data)
+    if data_type in (list, tuple):
+        data = [place_on_gpu(data[i], device) for i in range(len(data))]
+        data = data_type(data)
+        return data
+    elif data_type is dict:
+        data = {key: place_on_gpu(val, device) for key, val in data.items()}
+        return data
+    elif isinstance(data, torch.Tensor):
+        return data.to(device)
+    else:
+        return data
+
+
+def place_on_cpu(data):
+    """
+    Recursively places all 'torch.Tensor's in data on cpu and detaches from computation
+    graph. If elements are lists or tuples, recurses on the elements. Otherwise it
+    ignores it.
+    source: inspired by place_on_gpu from Snorkel Metal
+    https://github.com/HazyResearch/metal/blob/master/metal/utils.py
+    """
+    data_type = type(data)
+    if data_type in (list, tuple):
+        data = [place_on_cpu(data[i]) for i in range(len(data))]
+        data = data_type(data)
+        return data
+    elif data_type is dict:
+        data = {key: place_on_cpu(val) for key, val in data.items()}
+        return data
+    elif isinstance(data, torch.Tensor):
+        return data.cpu().detach()
+    else:
+        return data

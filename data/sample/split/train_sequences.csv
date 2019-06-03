@@ -1,7 +1,7 @@
-sequence_id,coeffs,filepath,parameters
-9,"[0.3567, 0.0794, 0.0251, 0.5388]",/Users/geoffreyangus/research-repositories/analytic-continuation/_dummy/processed/sequence_9,"[nan, 0.7703, 0.639, 5.8801]"
-4,"[0.3768, 0.0615, 0.2771, 0.2846]",/Users/geoffreyangus/research-repositories/analytic-continuation/_dummy/processed/sequence_4,"[nan, 0.6397, 0.3786, 5.0382]"
-2,"[0.2943, 0.2289, 0.3553, 0.1214]",/Users/geoffreyangus/research-repositories/analytic-continuation/_dummy/processed/sequence_2,"[nan, 0.7718, 0.917, 1.4941]"
-7,"[0.2586, 0.23, 0.2582, 0.2532]",/Users/geoffreyangus/research-repositories/analytic-continuation/_dummy/processed/sequence_7,"[nan, 0.8986, 0.8561, 1.6751]"
-10,"[0.1287, 0.4434, 0.0133, 0.4145]",/Users/geoffreyangus/research-repositories/analytic-continuation/_dummy/processed/sequence_10,"[nan, 0.5683, 0.7059, 7.4439]"
-3,"[0.2131, 0.3474, 0.2565, 0.183]",/Users/geoffreyangus/research-repositories/analytic-continuation/_dummy/processed/sequence_3,"[nan, 0.2781, 0.296, 4.3834]"
+sequence_id,coeff_0,coeff_1,coeff_2,coeff_3,param_0,param_1,param_2,param_3,sequence_path
+9,0.3567,0.0794,0.0251,0.5388,,0.7703,0.639,5.8801,/Users/geoffreyangus/research-repositories/analytic-continuation/_dummy/processed/sequence_9.npy
+4,0.3768,0.0615,0.2771,0.2846,,0.6397,0.3786,5.0382,/Users/geoffreyangus/research-repositories/analytic-continuation/_dummy/processed/sequence_4.npy
+2,0.2943,0.2289,0.3553,0.1214,,0.7718,0.917,1.4941,/Users/geoffreyangus/research-repositories/analytic-continuation/_dummy/processed/sequence_2.npy
+7,0.2586,0.23,0.2582,0.2532,,0.8986,0.8561,1.6751,/Users/geoffreyangus/research-repositories/analytic-continuation/_dummy/processed/sequence_7.npy
+10,0.1287,0.4434,0.0133,0.4145,,0.5683,0.7059,7.4439,/Users/geoffreyangus/research-repositories/analytic-continuation/_dummy/processed/sequence_10.npy
+3,0.2131,0.3474,0.2565,0.183,,0.2781,0.29600000000000004,4.3834,/Users/geoffreyangus/research-repositories/analytic-continuation/_dummy/processed/sequence_3.npy

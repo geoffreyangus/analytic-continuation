@@ -1,5 +1,8 @@
 """
 """
+import os
+import json
+
 import numpy as np
 import pandas as pd
 
@@ -21,18 +24,7 @@ class BaseDataset(Dataset):
         else:
             sequence_path = os.path.join(
                 dataset_dir, 'split', f'{split}_sequences.csv')
-        self.sequence_df = pd.read_csv(sequence_path)
-
-        self._get_data_dir()
-
-    def _get_data_dir(self):
-        """
-        """
-        # load dataset name and directory from dataset params file
-        with open(os.path.join(self.dataset_dir, "params.json")) as f:
-            params = json.load(f)
-            self.dataset_name = params["dataset_name"]
-            self.data_dir = params["data_dir"]
+        self.sequence_df = pd.read_csv(sequence_path, index_col=0)
 
     def __len__(self):
         """
@@ -58,13 +50,29 @@ class SequenceDataset(BaseDataset):
     """
     Loads numpy matrices as example sequences.
     """
-    def __init__(self, dataset_dir, split=None):
+    def __init__(self, dataset_dir, split=None, task_configs=[]):
         """
         """
         super().__init__(dataset_dir, split)
+        self.tasks = [task_config['task'] for task_config in task_configs]
 
     def __getitem__(self, idx):
         """
         """
         sequence_series = self.sequence_df.iloc[idx]
+        sequence_path = sequence_series['sequence_path']
+        inputs = self._load_sequence(sequence_path)
 
+        targets = {}
+        for task in self.tasks:
+            targets[task] = torch.tensor(sequence_series[task])
+
+        return inputs, targets, {
+            'sequence_id': sequence_series.name
+        }
+
+    def _load_sequence(self, sequence_path):
+        """
+        """
+        sequence = torch.tensor(np.load(sequence_path)).float()
+        return sequence
