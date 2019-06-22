@@ -35,15 +35,18 @@ class Builder(Process):
         """
         """
         data_dict = defaultdict(dict)
-        for entry in os.scandir(self.data_dir):
-            ids = list(re.finditer(r'[0-9]+', entry.name))
+        sequences = os.listdir(self.data_dir)
+        for filename in tqdm(sequences, total=len(sequences)):
+            ids = list(re.finditer(r'[0-9]+', filename))
             beta_id = ids[0][0]
             sequence_id = ids[1][0]
 
             if 'beta' not in data_dict[sequence_id]:
                 data_dict[sequence_id]['beta'] = {}
 
-            coeffs, parameters, data = self._read_dat_file(entry.path)
+            coeffs, parameters, data = self._read_dat_file(
+                os.path.join(self.data_dir, filename)
+            )
             data_dict[sequence_id]['beta'][beta_id] = data
 
             if 'coeffs' in data_dict[sequence_id]:
