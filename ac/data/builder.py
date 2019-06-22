@@ -14,12 +14,14 @@ from ac.util import Process, ensure_dir_exists
 class Builder(Process):
     """
     """
-    def __init__(self, dir, data_dir, output_dir, max_timesteps=None):
+    def __init__(self, dir, data_dir, output_dir,
+                 num_materials=4, max_timesteps=None):
         """
         """
         super().__init__(dir)
         self.data_dir = data_dir
         self.output_dir = output_dir
+        self.num_materials = num_materials
         self.max_timesteps = max_timesteps
 
     def _run(self, overwrite=False):
@@ -73,9 +75,11 @@ class Builder(Process):
                 output[f'param_{param_idx}'] = param
 
             beta_dict = data_dict[sequence_id]['beta']
+            # assumes all sequences have the same beta_vals
             if not beta_vals:
                 beta_vals = sorted(beta_dict.keys(),
                                    key=lambda x: int(x))
+
             X_list = []
             for beta in beta_vals:
                 x_i = beta_dict[beta]
@@ -103,18 +107,39 @@ class Builder(Process):
         """
         data = []
         with open(filepath, 'r') as f:
-            for i, line in enumerate(f.readlines()):
+            lines = f.readlines()
+            i = 0
+            while i < len(lines):
                 if i == 0:
-                    coeffs = line.split('\t')
-                    coeffs = coeffs[1:]
-                    coeffs = [float(c) if c != 'N/A' else -1.0
-                              for c in coeffs]
-                elif i == 1:
-                    parameters = line.split('\t')
-                    parameters = parameters[1:]
-                    parameters = [float(p) if 'N/A' not in p else np.nan
-                                  for p in parameters]
+                    coeffs, i = self._extract_vals(lines, i)
+                    parameters, i = self._extract_vals(lines, i)
                 else:
-                    data.append(np.fromstring(line, sep='\t'))
+                    data.append(np.fromstring(lines[i], sep='\t'))
+                    i += 1
         data = np.array(data)[:,1:]
         return coeffs, parameters, data
+
+    def _extract_vals(self, lines, i):
+        """
+        """
+        line = ''
+        offset = 0
+        while True:
+            line += lines[i + offset]
+            line = line.replace('\n', '')
+            parameters_str = line.split('\t')
+            parameters_str = parameters_str[1:]
+            parameters = []
+            for c in parameters_str:
+                val = -1.0
+                if 'N/A' not in c:
+                    try:
+                        val = float(c)
+                    except:
+                        val = 0.0
+                parameters.append(val)
+            offset += 1
+            if len(parameters) == self.num_materials:
+                break
+        i += offset
+        return parameters, i
