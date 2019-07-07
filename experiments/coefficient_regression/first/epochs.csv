@@ -1,0 +1,2 @@
+,time,train_coeff_0_mean_squared_error,train_coeff_1_mean_squared_error,train_coeff_2_mean_squared_error,train_coeff_3_mean_squared_error,valid_coeff_0_mean_squared_error,valid_coeff_1_mean_squared_error,valid_coeff_2_mean_squared_error,valid_coeff_3_mean_squared_error,learning_rate
+0,21:55:31 2019-07-06,1.3956762552261353,0.6702980399131775,3.993346929550171,0.43167614936828613,0.0015404274454340339,0.0017241495661437511,0.0107214180752635,0.010817321948707104,0.0001

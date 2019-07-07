@@ -1,0 +1,22 @@
+-e git+https://github.com/geoffreyangus/analytic-continuation.git@d90f436dbd6ad3112f40b0d6acd7702c3040ede4#egg=analytic_continuation
+Click==7.0
+cycler==0.10.0
+joblib==0.13.2
+jsmin==2.2.2
+kiwisolver==1.1.0
+matplotlib==3.1.0
+numpy==1.13.1
+olefile==0.44
+pandas==0.24.2
+Pillow==4.2.1
+pyparsing==2.4.0
+python-dateutil==2.8.0
+pytz==2019.1
+PyYAML==3.12
+scikit-learn==0.21.2
+scipy==1.3.0
+six==1.10.0
+torch==0.2.0.post3
+torchvision==0.1.9
+tqdm==4.32.1
+virtualenv==15.1.0

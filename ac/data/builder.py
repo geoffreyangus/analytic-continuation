@@ -5,6 +5,7 @@ import os
 import re
 from collections import defaultdict
 
+from tqdm import tqdm
 import pandas as pd
 import numpy as np
 
@@ -37,6 +38,8 @@ class Builder(Process):
         data_dict = defaultdict(dict)
         sequences = os.listdir(self.data_dir)
         for filename in tqdm(sequences, total=len(sequences)):
+            if os.path.splitext(filename)[1] != '.dat':
+                continue
             ids = list(re.finditer(r'[0-9]+', filename))
             beta_id = ids[0][0]
             sequence_id = ids[1][0]
@@ -69,7 +72,7 @@ class Builder(Process):
         """
         beta_vals = None
         output_df = []
-        for sequence_id, data in data_dict.items():
+        for sequence_id, data in tqdm(data_dict.items(), total=len(data_dict)):
             output = {'sequence_id': sequence_id}
 
             for coeff_idx, coeff in enumerate(data['coeffs']):

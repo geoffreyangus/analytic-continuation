@@ -29,11 +29,12 @@ class Experiment(Process):
         # set seed for reproducibility
         self.seed = seed
         torch.manual_seed(seed)
-        torch.cuda.manual_seed(seed)
         np.random.seed(seed)
 
         # set devices for CUDA compatibility
         self.cuda = cuda
+        if self.cuda:
+            torch.cuda.manual_seed(seed)
         self.device = devices[0]
         self.devices = devices
 

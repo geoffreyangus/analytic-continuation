@@ -30,7 +30,8 @@ class RegressionModel(BaseModel):
         encoder_class = encoder_config["class"]
         encoder_args = encoder_config["args"]
         self.encoder = getattr(encoders, encoder_class)(**encoder_args)
-        self.encoder = nn.DataParallel(self.encoder, device_ids=self.devices)
+        if self.cuda:
+            self.encoder = nn.DataParallel(self.encoder, device_ids=self.devices)
 
         decoder_class = decoder_config["class"]
         decoder_args = decoder_config["args"]

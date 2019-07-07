@@ -13,12 +13,15 @@ import ac.models.modules.losses as losses
 from ac.analysis.metrics import Metrics
 from ac.util import place_on_gpu
 
+import torch.multiprocessing
+torch.multiprocessing.set_sharing_strategy('file_system')
+
 
 class BaseModel(nn.Module):
     """
     """
 
-    def __init__(self, cuda=True, devices=[0]):
+    def __init__(self, cuda=False, devices=[0]):
         """
         args:
             device (int or list(int)) A device or a list of devices
@@ -82,6 +85,8 @@ class BaseModel(nn.Module):
 
         with tqdm(total=len(dataloader)) as t, torch.no_grad():
             for i, (inputs, targets, info) in enumerate(dataloader):
+                if i == 3:
+                    break
                 # move to GPU if available
                 if self.cuda:
                     inputs, targets = place_on_gpu(
@@ -97,6 +102,7 @@ class BaseModel(nn.Module):
                 metrics.add(predictions, labels, info)
 
                 # compute average loss and update the progress bar
+                del inputs
                 t.update()
 
         metrics.compute()
@@ -147,6 +153,10 @@ class BaseModel(nn.Module):
 
         with tqdm(total=len(dataloader)) as t:
             for i, (inputs, targets, info) in enumerate(dataloader):
+
+                if i == 3:
+                    break
+
                 if self.cuda:
                     inputs, targets = place_on_gpu(
                         [inputs, targets], self.device)
@@ -221,8 +231,12 @@ class BaseModel(nn.Module):
             substitution_res (list(tuple(str, str))) list of tuples like
                     (regex_pattern, replacement). re.sub is called on each key in the dict
         """
-        src_state_dict = torch.load(
-            src_path, map_location=torch.device(device))
+        if self.cuda:
+            src_state_dict = torch.load(
+                src_path, map_location=torch.device(device))
+        else:
+            src_state_dict = torch.load(
+                src_path, map_location='cpu')
 
         if type(inclusion_res) is str:
             inclusion_res = [inclusion_res]

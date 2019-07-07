@@ -1,0 +1,7 @@
+{
+    "process_class": "Builder",
+    "process_args": {
+        "data_dir": "/home/users/gangus/data_06-15-19/tmp",
+        "output_dir": "/home/users/gangus/data_06-15-19_processed"
+    }
+}

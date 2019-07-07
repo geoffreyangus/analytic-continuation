@@ -1,0 +1,14 @@
+{
+    "coeff_0": {
+        "mean_squared_error": 0.0015199093613773584
+    },
+    "coeff_1": {
+        "mean_squared_error": 0.0017894053598865867
+    },
+    "coeff_2": {
+        "mean_squared_error": 0.010952645912766457
+    },
+    "coeff_3": {
+        "mean_squared_error": 0.012486767023801804
+    }
+}
