@@ -96,7 +96,8 @@ class Metrics:
             self._compute_metric(**metric_config)
 
     def _compute_metric(self, fn, args={}, name=None, tasks=None,
-                        is_primary=False, primary_task='primary'):
+                        is_primary=False, primary_task='primary',
+                        compute_task_mean=True):
         """
         Computes a given metric.
 
@@ -134,8 +135,12 @@ class Metrics:
             values.append(value)
 
             if is_primary and task == primary_task:
-                print(task)
                 self.primary_metric = self.metrics[task][name]
+
+        if compute_task_mean:
+            self.metrics['_average'][name] = np.mean(values)
+        if '_average' == primary_task:
+            self.primary_metric = self.metrics['_average'][name]
 
         self.global_metrics[name] = np.mean(values)
 

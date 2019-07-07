@@ -1,3 +1,7 @@
+## 7/6
+
+Because Sherlock is a shared server farm, we cannot run `screen` commands effectively. We tried logging into a specific machine, but we lost the load balancing capabilities of the cluster, which caused a serious drop in performance. This was not thoroughly tested, so it might be worth trying again. Right now we have to run experiments with an active connection.
+
 ## 6/21
 
 We don't have write permissions to the $GROUP_SCRATCH folder but we've sent an email to make it happen.
@@ -27,3 +31,4 @@ Seems to be a syntax error in some of the files. Comes from scientific notation 
 
 For `screen` capabilities:
 
+ssh gangus@ln
