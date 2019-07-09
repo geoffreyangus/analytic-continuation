@@ -77,12 +77,33 @@ class RegressionModel(BaseModel):
         """
         """
         outputs = self.decoder(encoding)
-        # probs = {task: out / out.sum(dim=1).unsqueeze(1)
-        #          for task, out in outputs.items()}
-        return outputs
+        return probs
 
 
 class CoeffsRegressionModel(RegressionModel):
+    """
+    """
+    def __init__(self, cuda=False, devices=[0], pretrained_configs=[],
+                 encoder_config=None, decoder_config=None,
+                 loss_config=None, optim_config="Adam", scheduler_config=None,
+                 task_configs=[]):
+        """
+        """
+        super().__init__(cuda, devices, pretrained_configs,
+                         encoder_config, decoder_config,
+                         loss_config, optim_config, scheduler_config,
+                         task_configs)
+
+    def _predict_tasks(self, encoding):
+        """
+        """
+        outputs = self.decoder(encoding)
+        probs = {task: nn.functional.softmax(out, dim=1)
+                 for task, out in outputs.items()}
+        return probs
+
+
+class MTCoeffsRegressionModel(RegressionModel):
     """
     """
     def __init__(self, cuda=False, devices=[0], pretrained_configs=[],

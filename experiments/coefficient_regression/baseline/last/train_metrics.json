@@ -1,17 +1,17 @@
 {
     "coeff_0": {
-        "mean_squared_error": 2.180858850479126
+        "mean_squared_error": 0.001138451974838972
     },
     "coeff_1": {
-        "mean_squared_error": 4.271649360656738
+        "mean_squared_error": 0.0012433362426236272
     },
     "coeff_2": {
-        "mean_squared_error": 0.5646340250968933
+        "mean_squared_error": 0.009370347484946251
     },
     "coeff_3": {
-        "mean_squared_error": 0.5688281655311584
+        "mean_squared_error": 0.009918727912008762
     },
     "_average": {
-        "mean_squared_error": 1.8964924812316895
+        "mean_squared_error": 0.005417715758085251
     }
 }
