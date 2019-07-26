@@ -6,6 +6,43 @@ from torch.nn import MSELoss, KLDivLoss
 from ac.util import get_batch_size
 
 
+class MTKLDivLoss(KLDivLoss):
+    """
+    """
+    def __init__(self, size_average=None, reduce=None, reduction='mean'):
+        """
+        """
+        super().__init__(size_average, reduce, reduction)
+
+    def forward(self, inputs, targets):
+        """
+        """
+        losses = self._compute_loss(inputs, targets)
+        loss = self._balance(losses, targets)
+        return loss
+
+    def _compute_loss(self, inputs, targets):
+        """
+        """
+        losses = {}
+        for task in targets.keys():
+            Y_hat = inputs[task]
+            losses[task] = super().forward(Y_hat, targets[task])
+        return losses
+
+    def _balance(self, losses, targets):
+        """
+        """
+        for task in targets.keys():
+            if self.reduction == "mean":
+                losses[task] = losses[task].mean()
+            if self.reduction == "sum":
+                losses[task] = losses[task].sum()
+
+        loss = sum(losses.values())
+        return loss
+
+
 class MTMSELoss(MSELoss):
     """
     """
