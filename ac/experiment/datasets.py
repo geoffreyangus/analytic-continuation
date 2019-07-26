@@ -67,7 +67,7 @@ class SequenceDataset(BaseDataset):
         if len(self.tasks) == 1:
             task = self.tasks[0]
             if task == 'coeff':
-                target = [f'{task}_{i}' for i in range(4)]
+                target = [sequence_series[f'{task}_{i}'] for i in range(4)]
                 targets[task] = torch.tensor(target)
         else:
             for task in self.tasks:

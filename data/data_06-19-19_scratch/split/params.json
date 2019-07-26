@@ -1,0 +1,12 @@
+{
+    "process_class": "Splitter",
+    "process_args": {
+        "seed": 123,
+        "aggregate_csv_path": "data/data_06-19-19/sequences.csv",
+        "split_totals": {
+            "train": -1,
+            "valid": 2000,
+            "test": 2000
+        }
+    }
+}

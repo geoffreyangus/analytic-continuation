@@ -1,0 +1,7 @@
+{
+    "process_class": "Builder",
+    "process_args": {
+        "data_dir": "/scratch/groups/simes/analytic_cont+machine_learning/data_06-19-19/tmp",
+        "output_dir": "/home/users/gangus/data_06-19-19_processed"
+    }
+}

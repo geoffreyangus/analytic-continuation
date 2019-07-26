@@ -1,6 +1,7 @@
 """
 """
 import torch
+import torch.nn as nn
 from torch.nn import MSELoss, KLDivLoss
 
 from ac.util import get_batch_size
