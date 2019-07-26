@@ -35,13 +35,13 @@
             "metric_configs": [
                 {
                     "fn": "mean_squared_error",
-                    "primary_task": "coeffs",
+                    "primary_task": "coeff",
                     "is_primary": true
                 }
             ]
         },
-        "targets_dir": "data/data_06-19-19",
-        "dataset_dir": "data/data_06-19-19",
+        "targets_dir": "data/data_06-19-19_scratch",
+        "dataset_dir": "data/data_06-19-19_scratch",
         "dataset_config": {
             "class": "SequenceDataset",
             "args": {}
@@ -159,7 +159,7 @@
                             {
                                 "class": "Dropout",
                                 "args": {
-                                    "p": 0.5
+                                    "p": 0.0
                                 }
                             },
                             {

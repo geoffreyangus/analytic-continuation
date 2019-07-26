@@ -2,6 +2,7 @@
 """
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torch.nn import MSELoss, KLDivLoss
 
 from ac.util import get_batch_size
@@ -131,7 +132,7 @@ class MTSoftCrossEntropyLoss(nn.Module):
                 y_loss = F.cross_entropy(inputs[task], cls_idx, reduction="none")
                 if self.weight is not None:
                     y_loss = y_loss * self.weight[y]
-                cum_losses += target[task][:, y].float() * y_loss
+                cum_losses += targets[task][:, y].float() * y_loss
             losses[task] = cum_losses
         return losses
 
