@@ -21,7 +21,7 @@
                 "dataset_args": {}
             }
         ],
-        "model_save_dir": "/home/users/gangus/models",
+        "model_save_dir": "/home/users/skivelso/models",
         "train_args": {
             "num_epochs": 15,
             "summary_period": 1,

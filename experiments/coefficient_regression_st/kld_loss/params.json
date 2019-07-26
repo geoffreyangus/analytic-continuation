@@ -8,7 +8,7 @@
         ],
         "task_configs": [
             {
-                "task": "coeffs",
+                "task": "coeff",
                 "model_args": {
                     "task_head_config": {
                         "class": "LinearDecoder",
@@ -21,7 +21,7 @@
                 "dataset_args": {}
             }
         ],
-        "model_save_dir": "/home/users/gangus/models",
+        "model_save_dir": "/home/users/skivelso/models",
         "train_args": {
             "num_epochs": 15,
             "summary_period": 1,
@@ -35,13 +35,13 @@
             "metric_configs": [
                 {
                     "fn": "mean_squared_error",
-                    "primary_task": "coeffs",
+                    "primary_task": "coeff",
                     "is_primary": true
                 }
             ]
         },
-        "targets_dir": "data/data_06-19-19",
-        "dataset_dir": "data/data_06-19-19",
+        "targets_dir": "data/data_06-19-19_scratch",
+        "dataset_dir": "data/data_06-19-19_scratch",
         "dataset_config": {
             "class": "SequenceDataset",
             "args": {}
