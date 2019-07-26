@@ -1,0 +1,200 @@
+{
+    "process_class": "Experiment",
+    "process_args": {
+        "seed": 123,
+        "cuda": false,
+        "devices": [
+            0
+        ],
+        "task_configs": [
+            {
+                "task": "coeffs",
+                "model_args": {
+                    "task_head_config": {
+                        "class": "LinearDecoder",
+                        "args": {
+                            "input_size": 256,
+                            "num_classes": 4
+                        }
+                    }
+                },
+                "dataset_args": {}
+            }
+        ],
+        "model_save_dir": "/home/users/gangus/models",
+        "train_args": {
+            "num_epochs": 15,
+            "summary_period": 1,
+            "metric_configs": [
+                {
+                    "fn": "mean_squared_error"
+                }
+            ]
+        },
+        "valid_args": {
+            "metric_configs": [
+                {
+                    "fn": "mean_squared_error",
+                    "primary_task": "coeffs",
+                    "is_primary": true
+                }
+            ]
+        },
+        "targets_dir": "data/data_06-19-19",
+        "dataset_dir": "data/data_06-19-19",
+        "dataset_config": {
+            "class": "SequenceDataset",
+            "args": {}
+        },
+        "dataloader_configs": [
+            {
+                "split": "train",
+                "class": "MTDataLoader",
+                "args": {
+                    "shuffle": true,
+                    "batch_size": 64,
+                    "num_workers": 4
+                }
+            },
+            {
+                "split": "valid",
+                "class": "MTDataLoader",
+                "args": {
+                    "shuffle": true,
+                    "batch_size": 64,
+                    "num_workers": 4
+                }
+            }
+        ],
+        "model_config": {
+            "class": "CoeffsRegressionModel",
+            "args": {
+                "pretrained_configs": [],
+                "encoder_config": {
+                    "class": "SimpleEncoder",
+                    "args": {
+                        "conv_layer_configs": [
+                            {
+                                "class": "Conv1d",
+                                "args": {
+                                    "in_channels": 6,
+                                    "out_channels": 16,
+                                    "kernel_size": 5,
+                                    "stride": 1
+                                }
+                            },
+                            {
+                                "class": "MaxPool1d",
+                                "args": {
+                                    "kernel_size": 2
+                                }
+                            },
+                            {
+                                "class": "Conv1d",
+                                "args": {
+                                    "in_channels": 16,
+                                    "out_channels": 32,
+                                    "kernel_size": 5,
+                                    "stride": 1
+                                }
+                            },
+                            {
+                                "class": "MaxPool1d",
+                                "args": {
+                                    "kernel_size": 2
+                                }
+                            },
+                            {
+                                "class": "Conv1d",
+                                "args": {
+                                    "in_channels": 32,
+                                    "out_channels": 64,
+                                    "kernel_size": 5,
+                                    "stride": 1
+                                }
+                            },
+                            {
+                                "class": "MaxPool1d",
+                                "args": {
+                                    "kernel_size": 2
+                                }
+                            },
+                            {
+                                "class": "Conv1d",
+                                "args": {
+                                    "in_channels": 64,
+                                    "out_channels": 128,
+                                    "kernel_size": 5,
+                                    "stride": 1
+                                }
+                            },
+                            {
+                                "class": "MaxPool1d",
+                                "args": {
+                                    "kernel_size": 2
+                                }
+                            }
+                        ],
+                        "linear_layer_configs": [
+                            {
+                                "class": "Linear",
+                                "args": {
+                                    "in_features": 4608,
+                                    "out_features": 2048
+                                }
+                            },
+                            {
+                                "class": "Dropout",
+                                "args": {
+                                    "p": 0.0
+                                }
+                            },
+                            {
+                                "class": "Linear",
+                                "args": {
+                                    "in_features": 2048,
+                                    "out_features": 1024
+                                }
+                            },
+                            {
+                                "class": "Dropout",
+                                "args": {
+                                    "p": 0.5
+                                }
+                            },
+                            {
+                                "class": "Linear",
+                                "args": {
+                                    "in_features": 1024,
+                                    "out_features": 256
+                                }
+                            }
+                        ]
+                    }
+                },
+                "loss_config": {
+                    "class": "MTSoftCrossEntropyLoss",
+                    "args": {}
+                },
+                "decoder_config": {
+                    "class": "MTDecoder",
+                    "args": {}
+                },
+                "optim_config": {
+                    "class": "Adam",
+                    "args": {
+                        "lr": 0.0001,
+                        "weight_decay": 0
+                    }
+                },
+                "scheduler_config": {
+                    "class": "StepLR",
+                    "args": {
+                        "step_size": 4,
+                        "gamma": 0.5
+                    }
+                }
+            }
+        }
+    }
+}
