@@ -12,5 +12,4 @@ ml python/3.6
 ml py-pytorch/1.0.0_py36
 ml py-numpy/1.14.3_py36
 
-run /home/users/gangus/analytic-continuation/experiments/coefficient_regression/baseline
-run /home/users/gangus/analytic-continuation/experiments/coefficient_regression/baseline_regularized
+run /home/users/gangus/analytic-continuation//analytic-continuation/experiments/coefficient_regression_st/soft_ce_loss

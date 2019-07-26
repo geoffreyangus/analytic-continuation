@@ -25,6 +25,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     install_requires=[
-        'torch', 'numpy', 'pandas', 'scikit-learn', 'tqdm', 'click', 'matplotlib'
+        'torch', 'numpy', 'pandas', 'scikit-learn', 'tqdm', 'click', 'matplotlib',
+        'jsmin'
     ]
 )

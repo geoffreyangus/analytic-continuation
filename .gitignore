@@ -127,3 +127,7 @@ _dummy/
 
 # created by pip
 src/
+
+# sherlock specific
+res.txt
+submit.sh
