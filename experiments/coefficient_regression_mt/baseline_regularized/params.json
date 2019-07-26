@@ -6,6 +6,60 @@
         "devices": [
             0
         ],
+        "task_configs": [
+            {
+                "task": "coeff_0",
+                "model_args": {
+                    "task_head_config": {
+                        "class": "LinearDecoder",
+                        "args": {
+                            "input_size": 256,
+                            "num_classes": 1
+                        }
+                    }
+                },
+                "dataset_args": {}
+            },
+            {
+                "task": "coeff_1",
+                "model_args": {
+                    "task_head_config": {
+                        "class": "LinearDecoder",
+                        "args": {
+                            "input_size": 256,
+                            "num_classes": 1
+                        }
+                    }
+                },
+                "dataset_args": {}
+            },
+            {
+                "task": "coeff_2",
+                "model_args": {
+                    "task_head_config": {
+                        "class": "LinearDecoder",
+                        "args": {
+                            "input_size": 256,
+                            "num_classes": 1
+                        }
+                    }
+                },
+                "dataset_args": {}
+            },
+            {
+                "task": "coeff_3",
+                "model_args": {
+                    "task_head_config": {
+                        "class": "LinearDecoder",
+                        "args": {
+                            "input_size": 256,
+                            "num_classes": 1
+                        }
+                    }
+                },
+                "dataset_args": {}
+            }
+        ],
         "model_save_dir": "/home/users/gangus/models",
         "train_args": {
             "num_epochs": 15,
@@ -180,60 +234,6 @@
                     }
                 }
             }
-        },
-        "task_configs": [
-            {
-                "task": "coeff_0",
-                "model_args": {
-                    "task_head_config": {
-                        "class": "LinearDecoder",
-                        "args": {
-                            "input_size": 256,
-                            "num_classes": 1
-                        }
-                    }
-                },
-                "dataset_args": {}
-            },
-            {
-                "task": "coeff_1",
-                "model_args": {
-                    "task_head_config": {
-                        "class": "LinearDecoder",
-                        "args": {
-                            "input_size": 256,
-                            "num_classes": 1
-                        }
-                    }
-                },
-                "dataset_args": {}
-            },
-            {
-                "task": "coeff_2",
-                "model_args": {
-                    "task_head_config": {
-                        "class": "LinearDecoder",
-                        "args": {
-                            "input_size": 256,
-                            "num_classes": 1
-                        }
-                    }
-                },
-                "dataset_args": {}
-            },
-            {
-                "task": "coeff_3",
-                "model_args": {
-                    "task_head_config": {
-                        "class": "LinearDecoder",
-                        "args": {
-                            "input_size": 256,
-                            "num_classes": 1
-                        }
-                    }
-                },
-                "dataset_args": {}
-            }
-        ]
+        }
     }
 }
