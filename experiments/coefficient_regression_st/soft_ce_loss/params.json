@@ -8,7 +8,7 @@
         ],
         "task_configs": [
             {
-                "task": "coeffs",
+                "task": "coeff",
                 "model_args": {
                     "task_head_config": {
                         "class": "LinearDecoder",

@@ -64,8 +64,14 @@ class SequenceDataset(BaseDataset):
         inputs = self._load_sequence(sequence_path)
 
         targets = {}
-        for task in self.tasks:
-            targets[task] = torch.tensor(sequence_series[task])
+        if len(self.tasks) == 1:
+            task = self.tasks[0]
+            if task == 'coeff':
+                target = [f'{task}_{i}' for i in range(4)]
+                targets[task] = torch.tensor(target)
+        else:
+            for task in self.tasks:
+                targets[task] = torch.tensor(sequence_series[task])
 
         return inputs, targets, {
             'sequence_id': sequence_series.name
