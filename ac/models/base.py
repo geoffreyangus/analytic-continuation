@@ -85,7 +85,6 @@ class BaseModel(nn.Module):
 
         with tqdm(total=len(dataloader)) as t, torch.no_grad():
             for i, (inputs, targets, info) in enumerate(dataloader):
-
                 # move to GPU if available
                 if self.cuda:
                     inputs, targets = place_on_gpu(

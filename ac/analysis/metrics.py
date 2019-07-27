@@ -123,7 +123,7 @@ class Metrics:
                 if type(batch_preds) is torch.Tensor:
                     # flatten dimensions
                     batch_preds = batch_preds.view(-1, batch_preds.shape[-1]).squeeze(-1)
-                    batch_targets = batch_targets.view(-1).squeeze(-1)
+                    batch_targets = batch_targets.view(-1, batch_targets.shape[-1]).squeeze(-1)
                 all_preds.append(batch_preds)
                 all_targets.append(batch_targets)
 
