@@ -1,7 +1,7 @@
 -e git+https://github.com/geoffreyangus/analytic-continuation.git@d90f436dbd6ad3112f40b0d6acd7702c3040ede4#egg=analytic_continuation
 Click==7.0
 cycler==0.10.0
-joblib==0.13.2
+joblib==1.2.0
 jsmin==2.2.2
 kiwisolver==1.1.0
 matplotlib==3.1.0
